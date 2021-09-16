@@ -1,5 +1,4 @@
 #include "DrunkardOwnedStates.h"
-#include "MinerOwnedStates.h"
 #include "Drunkard.h"
 #include "Locations.h"
 #include "Time/CrudeTimer.h"
@@ -76,6 +75,7 @@ void SleepInRoom::Execute(Drunkard* drunkard)
     {
         //sleep
         drunkard->DecreaseFatigue();
+        drunkard->DecreaseDrunk();
 
         cout << "\n" << GetNameOfEntity(drunkard->ID()) << ": " << "ZZZz... Beeuuurgh... Fack'in shiet... ZZZz... ";
     }
@@ -139,7 +139,7 @@ bool LivingHisBestLife::OnMessage(Drunkard* drunkard, const Telegram& msg)
         cout << "\nMessage received by " << GetNameOfEntity(drunkard->ID()) <<
             " at time: " << Clock->GetCurrentTime();
 
-        SetTextColor(FOREGROUND_GREEN | FOREGROUND_INTENSITY);
+        SetTextColor(FOREGROUND_BLUE | FOREGROUND_INTENSITY);
         cout << "\n" << GetNameOfEntity(drunkard->ID()) << ": Ay budda, if it isn't ma drankin' part'na!";
 
         //Drunkard greet the miner
@@ -169,14 +169,14 @@ Drunkenness* Drunkenness::Instance()
 
 void Drunkenness::Enter(Drunkard* drunkard)
 {
-    SetTextColor(FOREGROUND_GREEN | FOREGROUND_INTENSITY);
+    SetTextColor(FOREGROUND_BLUE | FOREGROUND_INTENSITY);
     cout << "\n" << GetNameOfEntity(drunkard->ID()) << ": tha drink is marvaleus ! Tha naght onla began !";
 }
 
 
 void Drunkenness::Execute(Drunkard* drunkard)
 {
-    SetTextColor(FOREGROUND_GREEN | FOREGROUND_INTENSITY);
+    SetTextColor(FOREGROUND_BLUE | FOREGROUND_INTENSITY);
     if (drunkard->Fatigued())
     {
         cout << "\n" << GetNameOfEntity(drunkard->ID()) << ": "
@@ -220,7 +220,7 @@ bool Drunkenness::OnMessage(Drunkard* drunkard, const Telegram& msg)
         cout << "\nMessage received by " << GetNameOfEntity(drunkard->ID()) <<
             " at time: " << Clock->GetCurrentTime();
 
-        SetTextColor(FOREGROUND_GREEN | FOREGROUND_INTENSITY);
+        SetTextColor(FOREGROUND_BLUE | FOREGROUND_INTENSITY);
         cout << "\n" << GetNameOfEntity(drunkard->ID()) << ": That's it lad, ima break ya neck!";
 
         //let hubby know the stew is ready

@@ -4,11 +4,11 @@
 #include "Locations.h"
 #include "Miner.h"
 #include "MinersWife.h"
+#include "Drunkard.h"
 #include "EntityManager.h"
 #include "MessageDispatcher.h"
 #include "misc/ConsoleUtils.h"
 #include "EntityNames.h"
-#include "Drunkard.h"
 
 
 std::ofstream os;

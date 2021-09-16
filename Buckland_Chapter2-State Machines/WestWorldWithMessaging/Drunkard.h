@@ -18,12 +18,11 @@
 #include "Locations.h"
 #include "DrunkardOwnedStates.h"
 #include "misc/ConsoleUtils.h"
-#include "Miner.h"
 #include "fsm/StateMachine.h"
 #include "misc/Utils.h"
 
 //above this value a miner is thirsty
-const int DrunkLevel = 5;
+const int DrunkLevel = 3;
 //above this value a drunkard is sleepy
 const int DrunkardTirednessThreshold = 5;
 
@@ -36,9 +35,6 @@ private:
 
     location_type   m_Location;
 
-    //is she presently cooking?
-    bool            m_bCooking;
-
     //the higher the value, the more tired the drunkard
     int             m_iFatigue;
 
@@ -49,7 +45,8 @@ private:
 public:
 
     Drunkard(int id) :m_Location(saloon),
-        m_bCooking(false),
+        m_iFatigue(0),
+        m_iDrunk(0),
         BaseGameEntity(id)
 
     {
@@ -75,9 +72,6 @@ public:
     //----------------------------------------------------accessors
     location_type Location()const { return m_Location; }
     void          ChangeLocation(location_type loc) { m_Location = loc; }
-
-    bool          Cooking()const { return m_bCooking; }
-    void          SetCooking(bool val) { m_bCooking = val; }
 
     bool          Fatigued()const;
     void          DecreaseFatigue() { m_iFatigue -= 1; }

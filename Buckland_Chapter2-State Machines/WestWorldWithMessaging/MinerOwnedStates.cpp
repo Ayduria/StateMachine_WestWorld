@@ -226,6 +226,7 @@ QuenchThirst* QuenchThirst::Instance()
 
 void QuenchThirst::Enter(Miner* pMiner)
 {
+  SetTextColor(FOREGROUND_RED | FOREGROUND_INTENSITY);
   if (pMiner->Location() != saloon)
   {    
     pMiner->ChangeLocation(saloon);
@@ -261,7 +262,7 @@ void QuenchThirst::Exit(Miner* pMiner)
 
 bool QuenchThirst::OnMessage(Miner* pMiner, const Telegram& msg)
 {
-    SetTextColor(FOREGROUND_GREEN | FOREGROUND_INTENSITY);
+    SetTextColor(FOREGROUND_RED | FOREGROUND_INTENSITY);
     
 	switch (msg.Msg)
 	{

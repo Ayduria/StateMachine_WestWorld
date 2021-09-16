@@ -23,3 +23,8 @@ bool Drunkard::Fatigued()const
 
 	return false;
 }
+
+bool Drunkard::Drunked() const
+{
+	return m_iDrunk > DrunkLevel;
+}
