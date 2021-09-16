@@ -8,6 +8,7 @@
 #include "MessageDispatcher.h"
 #include "misc/ConsoleUtils.h"
 #include "EntityNames.h"
+#include "Drunkard.h"
 
 
 std::ofstream os;
@@ -28,15 +29,20 @@ int main()
   //create his wife
   MinersWife* Elsa = new MinersWife(ent_Elsa);
 
+  //create a drunkard
+  Drunkard* Cornelius = new Drunkard(ent_Cornelius);
+
   //register them with the entity manager
   EntityMgr->RegisterEntity(Bob);
   EntityMgr->RegisterEntity(Elsa);
+  EntityMgr->RegisterEntity(Cornelius);
 
   //run Bob and Elsa through a few Update calls
   for (int i=0; i<30; ++i)
   { 
     Bob->Update();
     Elsa->Update();
+    Cornelius->Update();
 
     //dispatch any delayed messages
     Dispatch->DispatchDelayedMessages();
@@ -47,6 +53,7 @@ int main()
   //tidy up
   delete Bob;
   delete Elsa;
+  delete Cornelius;
 
   //wait for a keypress before exiting
   PressAnyKeyToContinue();

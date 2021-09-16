@@ -17,6 +17,7 @@ using std::cout;
 extern std::ofstream os;
 #define cout os
 #endif
+#include <misc/utils.h>
 
 
 //------------------------------------------------------------------------methods for EnterMineAndDigForNugget
@@ -230,6 +231,15 @@ void QuenchThirst::Enter(Miner* pMiner)
     pMiner->ChangeLocation(saloon);
 
     cout << "\n" << GetNameOfEntity(pMiner->ID()) << ": " << "Boy, ah sure is thusty! Walking to the saloon";
+    
+    // send message to Conerlius
+    Dispatch->DispatchMessage(SEND_MSG_IMMEDIATELY,
+        pMiner->ID(),
+        ent_Cornelius,
+        Msg_GreetDrunkard,
+        NO_ADDITIONAL_INFO);
+
+    cout << "\n" << GetNameOfEntity(pMiner->ID()) << ": " << "Is tha bloody red headed bugga is here?";
   }
 }
 
@@ -251,8 +261,75 @@ void QuenchThirst::Exit(Miner* pMiner)
 
 bool QuenchThirst::OnMessage(Miner* pMiner, const Telegram& msg)
 {
-  //send msg to global message handler
+    SetTextColor(FOREGROUND_GREEN | FOREGROUND_INTENSITY);
+    
+	switch (msg.Msg)
+	{
+	case Msg_GreetMiner:
+	{
+		cout << "\n" << GetNameOfEntity(pMiner->ID()) << ": I'll have the same whisky!";
+		return true;
+	}
+	case Msg_ProvokeMiner:
+	{
+		cout << "\n" << GetNameOfEntity(pMiner->ID()) << ": whoa easy there!";
+		pMiner->GetFSM()->ChangeState(Dispute::Instance());
+		return true;
+	}
+	}
   return false;
+}
+
+// ------------------------------------------------------------------------------------------- Dispute
+
+Dispute* Dispute::Instance()
+{
+    static Dispute instance;
+
+    return &instance;
+}
+
+
+void Dispute::Enter(Miner* miner)
+{
+}
+
+
+void Dispute::Execute(Miner* miner)
+{
+    SetTextColor(BACKGROUND_RED | FOREGROUND_RED | FOREGROUND_GREEN | FOREGROUND_BLUE);
+
+    if (RandFloat() < 0.98)
+    {
+        cout << "\n" << GetNameOfEntity(miner->ID()) << " takes the nearest stool and proceed to hit " << GetNameOfEntity(ent_Cornelius) << ", breaking the stool instantly.";
+        
+        Dispatch->DispatchMessage(SEND_MSG_IMMEDIATELY,
+            miner->ID(),
+            ent_Cornelius,
+            Msg_HurtDrunkard,
+            NO_ADDITIONAL_INFO);
+    }
+    else
+    {
+        cout << "\n" << GetNameOfEntity(miner->ID()) << " takes his mighty pickaxe and perforate " << GetNameOfEntity(ent_Cornelius) << "'s chest, right through his heart.";
+        
+        Dispatch->DispatchMessage(SEND_MSG_IMMEDIATELY,
+            miner->ID(),
+            ent_Cornelius,
+            Msg_KillDrunkard,
+            NO_ADDITIONAL_INFO);
+    }
+        miner->GetFSM()->ChangeState(QuenchThirst::Instance());
+}
+
+void Dispute::Exit(Miner* drunkard)
+{
+}
+
+
+bool Dispute::OnMessage(Miner* miner, const Telegram& msg)
+{
+    return false;
 }
 
 //------------------------------------------------------------------------EatStew

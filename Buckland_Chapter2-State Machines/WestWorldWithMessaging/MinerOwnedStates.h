@@ -145,6 +145,38 @@ public:
 
 //------------------------------------------------------------------------
 //
+//  miner changes location to the saloon and keeps buying Whiskey until
+//  his thirst is quenched. When satisfied he returns to the goldmine
+//  and resumes his quest for nuggets.
+//------------------------------------------------------------------------
+class Dispute : public State<Miner>
+{
+private:
+
+	Dispute() {}
+
+	//copy ctor and assignment should be private
+	Dispute(const Dispute&);
+	Dispute& operator=(const Dispute&);
+
+public:
+
+	//this is a singleton
+	static Dispute* Instance();
+
+	virtual void Enter(Miner* miner);
+
+	virtual void Execute(Miner* miner);
+
+	virtual void Exit(Miner* miner);
+
+	virtual bool OnMessage(Miner* agent, const Telegram& msg);
+};
+
+
+
+//------------------------------------------------------------------------
+//
 //  this is implemented as a state blip. The miner eats the stew, gives
 //  Elsa some compliments and then returns to his previous state
 //------------------------------------------------------------------------

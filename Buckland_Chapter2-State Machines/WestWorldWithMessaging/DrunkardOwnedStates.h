@@ -44,96 +44,6 @@ public:
 	virtual bool OnMessage(Drunkard* drunkard, const Telegram& msg);
 };
 
-
-//------------------------------------------------------------------------
-//
-
-//------------------------------------------------------------------------
-class DoHouseWorkC : public State<Drunkard>
-{
-private:
-
-	DoHouseWorkC() {}
-
-	//copy ctor and assignment should be private
-	DoHouseWorkC(const DoHouseWorkC&);
-	DoHouseWorkC& operator=(const DoHouseWorkC&);
-
-public:
-
-	//this is a singleton
-	static DoHouseWorkC* Instance();
-
-	virtual void Enter(Drunkard* drunkard);
-
-	virtual void Execute(Drunkard* drunkard);
-
-	virtual void Exit(Drunkard* drunkard);
-
-	virtual bool OnMessage(Drunkard* drunkard, const Telegram& msg);
-
-};
-
-
-
-//------------------------------------------------------------------------
-//
-
-//------------------------------------------------------------------------
-class VisitBathroomC : public State<Drunkard>
-{
-private:
-
-	VisitBathroomC() {}
-
-	//copy ctor and assignment should be private
-	VisitBathroomC(const VisitBathroomC&);
-	VisitBathroomC& operator=(const VisitBathroomC&);
-
-public:
-
-	//this is a singleton
-	static VisitBathroomC* Instance();
-
-	virtual void Enter(Drunkard* drunkard);
-
-	virtual void Execute(Drunkard* drunkard);
-
-	virtual void Exit(Drunkard* drunkard);
-
-	virtual bool OnMessage(Drunkard* drunkard, const Telegram& msg);
-
-};
-
-
-//------------------------------------------------------------------------
-//
-
-//------------------------------------------------------------------------
-class CookStewC : public State<Drunkard>
-{
-private:
-
-	CookStewC() {}
-
-	//copy ctor and assignment should be private
-	CookStewC(const CookStewC&);
-	CookStewC& operator=(const CookStewC&);
-
-public:
-
-	//this is a singleton
-	static CookStewC* Instance();
-
-	virtual void Enter(Drunkard* drunkard);
-
-	virtual void Execute(Drunkard* drunkard);
-
-	virtual void Exit(Drunkard* drunkard);
-
-	virtual bool OnMessage(Drunkard* drunkard, const Telegram& msg);
-};
-
 //------------------------------------------------------------------------
 //
 
@@ -235,7 +145,7 @@ private:
 public:
 
 	//this is a singleton
-	static Drunkenness* Instance();
+	static ProvocativeBehaviour* Instance();
 
 	virtual void Enter(Drunkard* drunkard);
 

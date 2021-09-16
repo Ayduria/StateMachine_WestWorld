@@ -16,7 +16,7 @@ void Drunkard::Update()
 
 bool Drunkard::Fatigued()const
 {
-	if (m_iFatigue > TirednessThreshold)
+	if (m_iFatigue > DrunkardTirednessThreshold)
 	{
 		return true;
 	}

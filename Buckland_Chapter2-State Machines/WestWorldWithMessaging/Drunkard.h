@@ -25,7 +25,7 @@
 //above this value a miner is thirsty
 const int DrunkLevel = 5;
 //above this value a drunkard is sleepy
-const int TirednessThreshold = 5;
+const int DrunkardTirednessThreshold = 5;
 
 class Drunkard : public BaseGameEntity
 {
