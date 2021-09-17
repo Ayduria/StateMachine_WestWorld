@@ -23,6 +23,10 @@ bool Drunkard::Fatigued()const
 
 	return false;
 }
+bool Drunkard::ReadyToLeaveBed()const
+{
+	return m_iFatigue <= 0;
+}
 
 bool Drunkard::Drunked() const
 {

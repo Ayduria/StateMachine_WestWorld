@@ -11,7 +11,7 @@ enum message_type
   Msg_GreetMiner,
   Msg_ProvokeMiner,
   Msg_HurtDrunkard,
-  Msg_KillDrunkard
+  Msg_BadlyHurtDrunkard
 };
 
 

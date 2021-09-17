@@ -33,6 +33,12 @@ void EnterMineAndDigForNugget::Enter(Miner* pMiner)
 {
   //if the miner is not already located at the goldmine, he must
   //change location to the gold mine
+    
+  if (pMiner->GetFSM()->PreviousState() == QuenchThirst::Instance())
+  {
+      cout << "\n" << GetNameOfEntity(pMiner->ID()) << ": " << "Leaving the saloon, feelin' good";
+  }
+
   if (pMiner->Location() != goldmine)
   {
     cout << "\n" << GetNameOfEntity(pMiner->ID()) << ": " << "Walkin' to the goldmine";
@@ -230,33 +236,36 @@ void QuenchThirst::Enter(Miner* pMiner)
   if (pMiner->Location() != saloon)
   {    
     pMiner->ChangeLocation(saloon);
-
+    
     cout << "\n" << GetNameOfEntity(pMiner->ID()) << ": " << "Boy, ah sure is thusty! Walking to the saloon";
+    pMiner->PayEntryFee();
     
     // send message to Conerlius
+    SetTextColor(FOREGROUND_RED | FOREGROUND_INTENSITY);
+    cout << "\n" << GetNameOfEntity(pMiner->ID()) << ": " << "Is tha bloody red headed bugga is here?";
+    
     Dispatch->DispatchMessage(SEND_MSG_IMMEDIATELY,
         pMiner->ID(),
         ent_Cornelius,
         Msg_GreetDrunkard,
         NO_ADDITIONAL_INFO);
-
-    cout << "\n" << GetNameOfEntity(pMiner->ID()) << ": " << "Is tha bloody red headed bugga is here?";
   }
 }
 
 void QuenchThirst::Execute(Miner* pMiner)
 {
-  pMiner->BuyAndDrinkAWhiskey();
-
+  pMiner->DrinkWhiskey();
   cout << "\n" << GetNameOfEntity(pMiner->ID()) << ": " << "That's mighty fine sippin' liquer";
 
-  pMiner->GetFSM()->ChangeState(EnterMineAndDigForNugget::Instance());  
+  if (pMiner->IsReadyToLeave())
+  {
+    pMiner->GetFSM()->ChangeState(EnterMineAndDigForNugget::Instance());  
+  }
 }
 
 
 void QuenchThirst::Exit(Miner* pMiner)
 { 
-  cout << "\n" << GetNameOfEntity(pMiner->ID()) << ": " << "Leaving the saloon, feelin' good";
 }
 
 
@@ -298,7 +307,7 @@ void Dispute::Enter(Miner* miner)
 
 void Dispute::Execute(Miner* miner)
 {
-    SetTextColor(BACKGROUND_RED | FOREGROUND_RED | FOREGROUND_GREEN | FOREGROUND_BLUE);
+    SetTextColor(BACKGROUND_BLUE | FOREGROUND_RED | FOREGROUND_GREEN | FOREGROUND_BLUE);
 
     if (RandFloat() < 0.98)
     {
@@ -312,15 +321,17 @@ void Dispute::Execute(Miner* miner)
     }
     else
     {
-        cout << "\n" << GetNameOfEntity(miner->ID()) << " takes his mighty pickaxe and perforate " << GetNameOfEntity(ent_Cornelius) << "'s chest, right through his heart.";
+        cout << "\n" << GetNameOfEntity(miner->ID()) << " takes his mighty pickaxe and lacerates " << GetNameOfEntity(ent_Cornelius) << "'s chest";
         
         Dispatch->DispatchMessage(SEND_MSG_IMMEDIATELY,
             miner->ID(),
             ent_Cornelius,
-            Msg_KillDrunkard,
+            Msg_BadlyHurtDrunkard,
             NO_ADDITIONAL_INFO);
     }
-        miner->GetFSM()->ChangeState(QuenchThirst::Instance());
+
+    miner->IncreaseFatigue();
+    miner->GetFSM()->ChangeState(QuenchThirst::Instance());
 }
 
 void Dispute::Exit(Miner* drunkard)

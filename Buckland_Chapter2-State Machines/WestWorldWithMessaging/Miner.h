@@ -102,7 +102,9 @@ public:
   void          AddToWealth(int val);
 
   bool          Thirsty()const; 
-  void          BuyAndDrinkAWhiskey(){m_iThirst = 0; m_iMoneyInBank-=2;}
+  bool          IsReadyToLeave()const;
+  void          DrinkWhiskey() { m_iThirst -= 3;}
+  void          PayEntryFee() { m_iMoneyInBank -= 2; }
 
 };
 

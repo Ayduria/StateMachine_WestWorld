@@ -57,6 +57,7 @@ SleepInRoom* SleepInRoom::Instance()
 
 void SleepInRoom::Enter(Drunkard* drunkard)
 {
+    SetTextColor(FOREGROUND_BLUE | FOREGROUND_INTENSITY);
     cout << "\n" << GetNameOfEntity(drunkard->ID()) << ": Anotha' day ova' in thas shaty town";
 }
 
@@ -64,7 +65,7 @@ void SleepInRoom::Enter(Drunkard* drunkard)
 void SleepInRoom::Execute(Drunkard* drunkard)
 {
     //if miner is not fatigued start to dig for nuggets again.
-    if (!drunkard->Fatigued())
+    if (drunkard->ReadyToLeaveBed())
     {
         cout << "\n" << GetNameOfEntity(drunkard->ID()) << ": "
             << "Am too soba, me need to drank!";
@@ -257,7 +258,7 @@ void ProvocativeBehaviour::Enter(Drunkard* drunkard)
 
 void ProvocativeBehaviour::Execute(Drunkard* drunkard)
 {
-    SetTextColor(BACKGROUND_RED | FOREGROUND_RED | FOREGROUND_GREEN | FOREGROUND_BLUE);
+    SetTextColor(BACKGROUND_BLUE | FOREGROUND_RED | FOREGROUND_GREEN | FOREGROUND_BLUE);
     
     double f = RandFloat();
 
@@ -265,7 +266,7 @@ void ProvocativeBehaviour::Execute(Drunkard* drunkard)
     {
         cout << "\n" << GetNameOfEntity(drunkard->ID()) << " takes a bottle and smashes it on " << GetNameOfEntity(ent_Miner_Bob) << "'s forehead.";
     }
-    else if (f < 0.66)
+    else if (f < 0.98)
     {
         cout << "\n" << GetNameOfEntity(drunkard->ID()) << " jumps on the nearest table and drop kicks " << GetNameOfEntity(ent_Miner_Bob) << " in the chest.";
     }
@@ -286,6 +287,7 @@ bool ProvocativeBehaviour::OnMessage(Drunkard* drunkard, const Telegram& msg)
 
         cout << "\nMessage received by " << GetNameOfEntity(drunkard->ID()) <<
             " at time: " << Clock->GetCurrentTime();
+        bool respondToMessage = false;
     switch (msg.Msg)
     {
     case Msg_HurtDrunkard:
@@ -293,23 +295,26 @@ bool ProvocativeBehaviour::OnMessage(Drunkard* drunkard, const Telegram& msg)
         SetTextColor(FOREGROUND_BLUE | FOREGROUND_INTENSITY);
         cout << "\n" << GetNameOfEntity(drunkard->ID()) << ": Tis ain't the last you'll see of me! ya bastard...";
 
-        drunkard->GetFSM()->ChangeState(SleepInRoom::Instance());
+        respondToMessage = true;
+        break;
     }
-    case Msg_KillDrunkard:
+    case Msg_BadlyHurtDrunkard:
     {
         SetTextColor(FOREGROUND_BLUE | FOREGROUND_INTENSITY);
-        cout << "\n" << GetNameOfEntity(drunkard->ID()) << ": BLarGH...!";
+        cout << "\n" << GetNameOfEntity(drunkard->ID()) << ": Tas nothin' bat a flesh wound.";
         
-        SetTextColor(BACKGROUND_RED | FOREGROUND_RED | FOREGROUND_GREEN | FOREGROUND_BLUE);
-        cout << "\n" << GetNameOfEntity(drunkard->ID()) << " lies on the ground, pickaxe through the chest.";
-
-        //delete drunkard;
+        respondToMessage = true;
+        break;
     }
-
-
-    return true;
 
     }//end switch
 
-    return false;
+    if (respondToMessage)
+    {
+        SetTextColor(BACKGROUND_BLUE | FOREGROUND_RED | FOREGROUND_GREEN | FOREGROUND_BLUE);
+        cout << "\n" << GetNameOfEntity(drunkard->ID()) << " retreats to his room.";
+        drunkard->GetFSM()->ChangeState(SleepInRoom::Instance());
+    }
+    
+    return respondToMessage;
 }

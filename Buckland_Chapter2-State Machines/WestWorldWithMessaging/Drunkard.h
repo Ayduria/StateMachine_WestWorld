@@ -74,8 +74,10 @@ public:
     void          ChangeLocation(location_type loc) { m_Location = loc; }
 
     bool          Fatigued()const;
+    bool          ReadyToLeaveBed()const;
     void          DecreaseFatigue() { m_iFatigue -= 1; }
     void          IncreaseFatigue() { m_iFatigue += 1; }
+
 
     bool          Drunked()const;
     void          DecreaseDrunk() { m_iDrunk -= 1; }
