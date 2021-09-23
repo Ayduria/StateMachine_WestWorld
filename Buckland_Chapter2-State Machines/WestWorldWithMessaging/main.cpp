@@ -1,5 +1,8 @@
 #include <fstream>
 #include <time.h>
+#include <thread>
+#include <mutex>
+#include <chrono>
 
 #include "Locations.h"
 #include "Miner.h"
@@ -10,8 +13,30 @@
 #include "misc/ConsoleUtils.h"
 #include "EntityNames.h"
 
-
 std::ofstream os;
+std::mutex Mutex;
+int threadActif = 0;
+
+void entityUpdate(BaseGameEntity* entity) {
+    int cpt = 0;
+
+    Mutex.lock();
+    threadActif++;
+    Mutex.unlock();
+    // S'assurer que les trois threads sont actifs avant de commencer
+    while (threadActif != 3) {} 
+
+    while (cpt < 30) {
+        if (Mutex.try_lock()) {
+            entity->Update();
+            Dispatch->DispatchDelayedMessages();
+            Mutex.unlock();
+            cpt++;
+            std::this_thread::sleep_for(std::chrono::milliseconds(1000));
+        }
+    }
+
+}
 
 int main()
 {
@@ -37,18 +62,13 @@ int main()
   EntityMgr->RegisterEntity(Elsa);
   EntityMgr->RegisterEntity(Cornelius);
 
-  //run Bob and Elsa through a few Update calls
-  for (int i=0; i<30; ++i)
-  { 
-    Bob->Update();
-    Elsa->Update();
-    Cornelius->Update();
+  std::thread tMiner(entityUpdate, Bob);
+  std::thread tMinersWife(entityUpdate, Elsa);
+  std::thread tDrunkard(entityUpdate, Cornelius);
 
-    //dispatch any delayed messages
-    Dispatch->DispatchDelayedMessages();
-
-    Sleep(800);
-  }
+  tMiner.join();
+  tMinersWife.join();
+  tDrunkard.join();
 
   //tidy up
   delete Bob;
@@ -57,8 +77,6 @@ int main()
 
   //wait for a keypress before exiting
   PressAnyKeyToContinue();
-
-
   return 0;
 }
 
